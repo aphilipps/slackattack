@@ -2,6 +2,8 @@
 import botkit from 'botkit';
 
 const Yelp = require('yelp');
+let foodType;
+let location;
 
 // botkit controller
 const controller = botkit.slackbot({
@@ -26,7 +28,7 @@ controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
 });
 
 // example hello response
-controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
+controller.hears(['hello', 'hi', 'howdy'], ['direct_message'], (bot, message) => {
   bot.api.users.info({ user: message.user }, (err, res) => {
     if (res) {
       bot.reply(message, `Hello, ${res.user.name}!`);
@@ -41,13 +43,6 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
 //   bot.reply(message, 'stop typing!');
 // });
 
-// const yelp = new Yelp({
-//   consumer_key: '8pxAMuvJCfWZP1whqFP7TA',
-//   consumer_secret: 'nGJeb4f5_6R1G1lRdJqoHHHfHdg',
-//   token: 'B-tFWyA81U2P8AwdYK2Qy2jGGLjmXTPL',
-//   token_secret: 'AAJhSueRz8VBOpHHDFIsb37cEjg',
-// });
-
 const yelp = new Yelp({
   consumer_key: process.env.YELP_CONSUMER_KEY,
   consumer_secret: process.env.YELP_CONSUMER_SECRET,
@@ -56,45 +51,68 @@ const yelp = new Yelp({
 });
 
 const askWhere = (response, convo) => {
+  let attachment;
   convo.ask('Where are you?', (answer, talk) => {
     convo.say('Cool.');
+    location = answer.text;
+    console.log(answer.text);
+
+    yelp.search({ term: foodType, location })
+    .then((data) => {
+      console.log(data);
+      data.businesses.forEach(business => {
+        // if (business.name.indexOf(foodType) !== -1) {
+        console.log('Found one');
+        attachment = {
+          text: `Rating: ${business.rating}`,
+          attachments: [
+            {
+              title: business.name,
+              text: business.snippet_text,
+            },
+          ],
+          icon_url: 'http://s3-media3.fl.yelpcdn.com/photo/m6vlPsVGi9ln0hQM0LGylw/ms.jpg',
+        };
+        console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
+        console.log(attachment);
+        // console.log(answer);
+        slackbot.reply(attachment);
+        // }
+        // console.log('maybe didnt find one');
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+
     convo.next();
   });
 };
 
-controller.hears(['pizzatime'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
-  console.log('Starting conversation');
-  bot.startConversation(message, askWhere);
-});
-
-
-//   bot.startConversation(message, askFlavor);
-// });
-
-// controller.hears(['pizzatime'], (bot, message) => {
-//   bot.startConversation(message, askFlavor);
-// });
-// const askFlavor = (answer, convo) => {
-//   convo.ask('What flavor of pizza do you want?', (answer, convo) => {
-//     convo.say('Awesome.');
-//     convo.next();
-//   });
-// };
-
-controller.hears(['food', 'hi', 'howdy'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
-  yelp.search({ term: 'food', location: 'Montreal' })
-  .then((data) => {
-    console.log(data);
-    data.businesses.forEach(business => {
-      if (business.rating === 4) {
-        bot.reply(message, `${business.name} is a prety good restaurant.`);
-      }
-    });
-  })
-  .catch((err) => {
-    console.error(err);
+const askType = (response, convo) => {
+  convo.ask('What kind of food are you interested in?', (answer, talk) => {
+    convo.say('Ok.');
+    console.log(answer.text);
+    foodType = answer.text;
+    askWhere(response, convo);
+    convo.next();
   });
+};
+
+const askHungry = (response, convo) => {
+  convo.ask('Would you like food recommendations near you?', (answer, talk) => {
+    convo.say('Great');
+    askType(response, convo);
+    convo.next();
+  });
+};
+
+controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
+  console.log('Starting conversation');
+  bot.startConversation(message, askHungry, bot);
 });
+
 
 controller.on('outgoing_webhook', (bot, message) => {
   bot.replyPublic(message, 'CHIRP CHIRP CHIRP');
