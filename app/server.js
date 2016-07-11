@@ -96,4 +96,8 @@ controller.hears(['food', 'hi', 'howdy'], ['direct_message', 'direct_mention', '
   });
 });
 
+controller.on('outgoing_webhook', (bot, message) => {
+  bot.replyPublic(message, 'CHIRP CHIRP CHIRP');
+});
+
 console.log('starting bot');
