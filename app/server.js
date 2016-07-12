@@ -60,26 +60,26 @@ const askWhere = (response, convo) => {
     yelp.search({ term: foodType, location })
     .then((data) => {
       console.log(data);
-      data.businesses(business => {
-        // if (business.name.indexOf(foodType) !== -1) {
-        console.log('Found one');
-        attachment = {
-          text: `Rating: ${business[0].rating}`,
-          attachments: [
-            {
-              title: business[0].name,
-              text: business[0].snippet_text,
-            },
-          ],
-          image_url: 'http://s3-media3.fl.yelpcdn.com/photo/m6vlPsVGi9ln0hQM0LGylw/ms.jpg',
-        };
-        console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
-        console.log(attachment);
+      // data.businesses.foreach(business => {
+        // if (data.business.si.name.indexOf(foodType) !== -1) {
+      console.log('Found one');
+      attachment = {
+        text: `Rating: ${data.businesses[0].rating}`,
+        attachments: [
+          {
+            title: data.businesses[0].name,
+            text: data.businesses[0].snippet_text,
+          },
+        ],
+        image_url: 'http://s3-media3.fl.yelpcdn.com/photo/m6vlPsVGi9ln0hQM0LGylw/ms.jpg',
+      };
+      console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
+      console.log(attachment);
         // console.log(answer);
-        convo.say(attachment);
+      convo.say(attachment);
         // }
         // console.log('maybe didnt find one');
-      });
+      // });
     })
     .catch((err) => {
       console.error(err);
