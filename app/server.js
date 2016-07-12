@@ -80,6 +80,7 @@ const askWhere = (response, convo) => {
       console.log(attachment);
         // console.log(answer);
       convo.say(attachment);
+      convo.next();
         // }
         // console.log('maybe didnt find one');
       // });
@@ -87,9 +88,6 @@ const askWhere = (response, convo) => {
     .catch((err) => {
       console.error(err);
     });
-
-
-    convo.next();
   });
 };
 
