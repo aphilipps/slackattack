@@ -150,7 +150,7 @@ controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (b
 
 controller.on('outgoing_webhook', (bot, message) => {
   console.log('received webhook');
-  bot.replyPublic(message, 'CHIRP CHIRP CHIRP http://giphy.com/gifs/darylalexsy-coffee-grumpy-morning-owl-5xtDarnKksJYUxXeNpe');
+  bot.replyPublic(message, 'CHIRP I\'m awake CHIRP http://giphy.com/gifs/darylalexsy-coffee-grumpy-morning-owl-5xtDarnKksJYUxXeNpe');
 });
 
 console.log('starting bot');
