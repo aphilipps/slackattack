@@ -122,6 +122,37 @@ const askHungry = (response, convo) => {
   });
 };
 
+controller.hears(['question me'], 'message_received', (bot, message) => {
+  // start a conversation to handle this response.
+  bot.startConversation(message, (err, convo) => {
+    convo.ask('Shall we proceed Say YES, NO or DONE to quit.', [
+      {
+        pattern: bot.utterances.yes,
+        callback(answer, talk) {
+          convo.say('Great');
+          askType(answer, talk);
+          convo.next();
+        },
+      },
+      {
+        pattern: bot.utterances.no,
+        callback(answer, talk) {
+          convo.say('Ok, maybe another time');
+          convo.end();
+        },
+      },
+      {
+        default: true,
+        callback(answer, talk) {
+          // just repeat the question
+          convo.repeat();
+          convo.next();
+        },
+      },
+    ]);
+  });
+});
+
 
 controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   console.log('Starting conversation');
