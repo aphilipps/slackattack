@@ -104,12 +104,26 @@ const askType = (response, convo) => {
 };
 
 const askHungry = (response, convo) => {
+  // convo.ask('Shall we proceed Say YES, NO or DONE to quit.',[
+  //     {
+      //   pattern: 'done',
+      //   callback: function(response,convo) {
+      //     convo.say('OK you are done!');
+      //     convo.next();
+      //   }
+
   convo.ask('Would you like food recommendations near you?', (answer, talk) => {
-    convo.say('Great');
-    askType(response, convo);
-    convo.next();
+    if (answer === slackbot.pattern.utterances.YES) {
+      convo.say('Great');
+      askType(response, convo);
+      convo.next();
+    } else if (answer === slackbot.pattern.utterances.NO) {
+      convo.say('Ok, maybe another time');
+      convo.end();
+    }
   });
 };
+
 
 controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   console.log('Starting conversation');
