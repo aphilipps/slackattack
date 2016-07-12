@@ -76,7 +76,7 @@ const askWhere = (response, convo) => {
         console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
         console.log(attachment);
         // console.log(answer);
-        slackbot.reply(attachment);
+        convo.say(attachment);
         // }
         // console.log('maybe didnt find one');
       });
@@ -115,6 +115,7 @@ controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (b
 
 
 controller.on('outgoing_webhook', (bot, message) => {
+  console.log('received webhook');
   bot.replyPublic(message, 'CHIRP CHIRP CHIRP');
 });
 
