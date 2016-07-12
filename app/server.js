@@ -149,8 +149,20 @@ controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (b
 });
 
 controller.on('outgoing_webhook', (bot, message) => {
+  let attachment = undefined;
   console.log('received webhook');
-  bot.replyPublic(message, 'CHIRP I\'m awake CHIRP http://giphy.com/gifs/darylalexsy-coffee-grumpy-morning-owl-5xtDarnKksJYUxXeNpe');
+  attachment = {
+    text: 'CHIRP I\'m awake CHIRP',
+    attachments: [
+      {
+        color: '#7CD197',
+        image_url: 'http://giphy.com/gifs/darylalexsy-coffee-grumpy-morning-owl-5xtDarnKksJYUxXeNpe',
+      },
+    ],
+  // thumb_url: data.businesses[0].image_url,
+  };
+
+  bot.replyPublic(message, attachment);
 });
 
 console.log('starting bot');
