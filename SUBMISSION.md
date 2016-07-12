@@ -4,6 +4,9 @@ Heroku url: https://slackbot-philipps.herokuapp.com/
 
 Github url: https://github.com/aphilipps/slackattack
 
+### Extra Credit
+Added functionality to get snow forecasts and conditions at several ski resorts.
+
 ## Hello
 
 ![hello](imgs/hello.png)
