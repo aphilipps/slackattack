@@ -71,10 +71,10 @@ const askWhere = (response, convo) => {
             title_link: data.businesses[0].url,
             text: data.businesses[0].snippet_text,
             color: '#7CD197',
+            image_url: data.businesses[0].image_url,
           },
         ],
-        image_url: data.businesses[0].image_url,
-        thumb_url: data.businesses[0].image_url,
+        // thumb_url: data.businesses[0].image_url,
       };
       console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
       console.log(attachment);
