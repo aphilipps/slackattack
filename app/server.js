@@ -60,18 +60,18 @@ const askWhere = (response, convo) => {
     yelp.search({ term: foodType, location })
     .then((data) => {
       console.log(data);
-      data.businesses.forEach(business => {
+      data.businesses(business => {
         // if (business.name.indexOf(foodType) !== -1) {
         console.log('Found one');
         attachment = {
-          text: `Rating: ${business.rating}`,
+          text: `Rating: ${business[0].rating}`,
           attachments: [
             {
-              title: business.name,
-              text: business.snippet_text,
+              title: business[0].name,
+              text: business[0].snippet_text,
             },
           ],
-          icon_url: 'http://s3-media3.fl.yelpcdn.com/photo/m6vlPsVGi9ln0hQM0LGylw/ms.jpg',
+          image_url: 'http://s3-media3.fl.yelpcdn.com/photo/m6vlPsVGi9ln0hQM0LGylw/ms.jpg',
         };
         console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
         console.log(attachment);
