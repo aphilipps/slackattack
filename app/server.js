@@ -91,11 +91,9 @@ const askWhere = (response, convo) => {
               image_url: data.businesses[0].image_url,
             },
           ],
-        // thumb_url: data.businesses[0].image_url,
         };
         console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
         console.log(attachment);
-        // console.log(answer);
         convo.say(attachment);
         convo.next();
       }
@@ -159,7 +157,6 @@ controller.on('outgoing_webhook', (bot, message) => {
         image_url: 'http://giphy.com/gifs/darylalexsy-coffee-grumpy-morning-owl-5xtDarnKksJYUxXeNpe',
       },
     ],
-  // thumb_url: data.businesses[0].image_url,
   };
 
   bot.replyPublic(message, attachment);
