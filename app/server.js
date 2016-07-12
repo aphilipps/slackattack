@@ -39,6 +39,19 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention'],
   console.log('Sent message');
 });
 
+
+// regex pulled from http://stackoverflow.com/questions/6711971/regular-expressions-match-anything
+controller.hears(['help'], ['direct_message', 'direct_mention'], (bot, message) => {
+  bot.reply(message, 'I can only do a few things, if you want food recommendations, type `hungry`');
+  console.log('Sent message');
+});
+
+controller.hears(['[^]*'], ['direct_message', 'direct_mention'], (bot, message) => {
+  bot.reply(message, 'What did you say?');
+  console.log('Sent message');
+});
+
+
 // controller.on('user_typing', (bot, message) => {
 //   bot.reply(message, 'stop typing!');
 // });
