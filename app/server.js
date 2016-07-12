@@ -240,7 +240,7 @@ controller.hears(['snow'], ['direct_message', 'direct_mention', 'mention'], (bot
 });
 
 controller.hears(['[^]*'], ['direct_message', 'direct_mention'], (bot, message) => {
-  bot.reply(message, 'What did you say?');
+  bot.reply(message, 'I didn\'t understand that');
 });
 
 controller.on('outgoing_webhook', (bot, message) => {
