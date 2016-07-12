@@ -11,7 +11,7 @@ const controller = botkit.slackbot({
 });
 
 // initialize slackbot
-controller.spawn({
+const slackbot = controller.spawn({
   token: process.env.SLACK_BOT_TOKEN,
   // this grabs the slack token we exported earlier
 }).startRTM(err => {
@@ -21,11 +21,11 @@ controller.spawn({
 
 // prepare webhook
 // for now we won't use this but feel free to look up slack webhooks
-// controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
-//   controller.createWebhookEndpoints(webserver, slackbot, () => {
-//     if (err) { throw new Error(err); }
-//   });
-// });
+controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
+  controller.createWebhookEndpoints(webserver, slackbot, () => {
+    if (err) { throw new Error(err); }
+  });
+});
 
 // example hello response
 controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention'], (bot, message) => {
