@@ -11,7 +11,7 @@ const controller = botkit.slackbot({
 });
 
 // initialize slackbot
-const slackbot = controller.spawn({
+controller.spawn({
   token: process.env.SLACK_BOT_TOKEN,
   // this grabs the slack token we exported earlier
 }).startRTM(err => {
@@ -21,11 +21,11 @@ const slackbot = controller.spawn({
 
 // prepare webhook
 // for now we won't use this but feel free to look up slack webhooks
-controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
-  controller.createWebhookEndpoints(webserver, slackbot, () => {
-    if (err) { throw new Error(err); }
-  });
-});
+// controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
+//   controller.createWebhookEndpoints(webserver, slackbot, () => {
+//     if (err) { throw new Error(err); }
+//   });
+// });
 
 // example hello response
 controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention'], (bot, message) => {
@@ -63,27 +63,29 @@ const askWhere = (response, convo) => {
       // data.businesses.foreach(business => {
         // if (data.business.si.name.indexOf(foodType) !== -1) {
       console.log('Found one');
-      attachment = {
-        text: `Rating: ${data.businesses[0].rating}`,
-        attachments: [
-          {
-            title: data.businesses[0].name,
-            title_link: data.businesses[0].url,
-            text: data.businesses[0].snippet_text,
-            color: '#7CD197',
-            image_url: data.businesses[0].image_url,
-          },
-        ],
+      if (data.businesses === undefined) {
+        convo.say('Couldn\'t find any restaurantes near you');
+        convo.next();
+      } else {
+        attachment = {
+          text: `Rating: ${data.businesses[0].rating}`,
+          attachments: [
+            {
+              title: data.businesses[0].name,
+              title_link: data.businesses[0].url,
+              text: data.businesses[0].snippet_text,
+              color: '#7CD197',
+              image_url: data.businesses[0].image_url,
+            },
+          ],
         // thumb_url: data.businesses[0].image_url,
-      };
-      console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
-      console.log(attachment);
+        };
+        console.log('HERE IS THE ATTACHMENT YOU ARE GOING TO SEND');
+        console.log(attachment);
         // console.log(answer);
-      convo.say(attachment);
-      convo.next();
-        // }
-        // console.log('maybe didnt find one');
-      // });
+        convo.say(attachment);
+        convo.next();
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -101,31 +103,11 @@ const askType = (response, convo) => {
   });
 };
 
-const askHungry = (response, convo) => {
-  // convo.ask('Shall we proceed Say YES, NO or DONE to quit.',[
-  //     {
-      //   pattern: 'done',
-      //   callback: function(response,convo) {
-      //     convo.say('OK you are done!');
-      //     convo.next();
-      //   }
-
-  convo.ask('Would you like food recommendations near you?', (answer, talk) => {
-    if (answer === slackbot.pattern.utterances.YES) {
-      convo.say('Great');
-      askType(response, convo);
-      convo.next();
-    } else if (answer === slackbot.pattern.utterances.NO) {
-      convo.say('Ok, maybe another time');
-      convo.end();
-    }
-  });
-};
-
-controller.hears(['question me'], 'message_received', (bot, message) => {
+// patterns pulled from https://github.com/howdyai/botkit#botreply
+controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   // start a conversation to handle this response.
   bot.startConversation(message, (err, convo) => {
-    convo.ask('Shall we proceed Say YES, NO or DONE to quit.', [
+    convo.ask('Would you like food recommendations near you?', [
       {
         pattern: bot.utterances.yes,
         callback(answer, talk) {
@@ -138,7 +120,7 @@ controller.hears(['question me'], 'message_received', (bot, message) => {
         pattern: bot.utterances.no,
         callback(answer, talk) {
           convo.say('Ok, maybe another time');
-          convo.end();
+          convo.next();
         },
       },
       {
@@ -152,13 +134,6 @@ controller.hears(['question me'], 'message_received', (bot, message) => {
     ]);
   });
 });
-
-
-controller.hears(['hungry'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
-  console.log('Starting conversation');
-  bot.startConversation(message, askHungry, bot);
-});
-
 
 controller.on('outgoing_webhook', (bot, message) => {
   console.log('received webhook');
